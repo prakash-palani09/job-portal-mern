@@ -5,6 +5,7 @@ A full-stack job portal application built using the MERN stack where recruiters 
 ---
 
 ## 🚀 Features
+
 - Role-based authentication (Job Seeker & Recruiter)
 - Secure JWT authentication
 - Job posting, updating, and deletion
@@ -16,15 +17,17 @@ A full-stack job portal application built using the MERN stack where recruiters 
 ---
 
 ## 🛠️ Tech Stack
+
 **Frontend:** React, Tailwind CSS  
 **Backend:** Node.js, Express.js  
 **Database:** MongoDB  
 **Authentication:** JWT  
-**File Storage:** Cloudinary  
+**File Storage:** Cloudinary
 
 ---
 
 ## 📁 Project Structure
+
 The project follows a modular MVC-based architecture for scalability and maintainability.
 
 job-portal-mern/
@@ -39,16 +42,18 @@ job-portal-mern/
 ├── frontend/
 └── README.md
 
-
 ---
 
 ## 📌 Project Status
+
 🚧 Currently under development  
 ✔ Day 1 completed – Backend setup & project structure
+✔ Day 2 completed – MongoDB Atlas integration
 
 ---
 
 ## 🔮 Upcoming Features
+
 - Applicant status tracking (Shortlisted / Rejected)
 - Email notifications
 - Resume parsing
@@ -57,4 +62,5 @@ job-portal-mern/
 ---
 
 ## 🧑‍💻 Author
+
 **Prakash**
