@@ -10,6 +10,7 @@ const app = express();
 app.use(express.json());
 
 app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/test", require("./routes/testRoutes"));
 
 app.get("/", (req, res) => {
   res.send("Job Portal API Running");
