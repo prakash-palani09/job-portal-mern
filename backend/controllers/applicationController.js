@@ -1,5 +1,7 @@
 const Application = require('../models/Application');
 const Job = require('../models/Job');
+const cloudinary = require('../config/cloudinary');
+const fs = require('fs');
 
 exports.applyJob = async (req, res) => {
     try {
@@ -56,4 +58,38 @@ exports.updateApplicationStatus = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
+};
+
+
+exports.uploadResume = async (req, res) => {
+  try {
+    const application = await Application.findById(req.params.id);
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    // Upload to Cloudinary as PUBLIC RAW
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      resource_type: "raw",
+      folder: "job_portal_resumes",
+      type: "upload",        // 🔥 THIS REMOVES 401
+      access_mode: "public", // 🔥
+      use_filename: true,
+      unique_filename: false,
+    });
+
+    // Delete temp file
+    fs.unlinkSync(req.file.path);
+
+    application.resume = result.secure_url;
+    await application.save();
+
+    res.json({
+      message: "Resume uploaded successfully",
+      resume: result.secure_url,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
 };
