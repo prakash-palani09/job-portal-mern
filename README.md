@@ -47,9 +47,10 @@ job-portal-mern/
 ## 📌 Project Status
 
 🚧 Currently under development  
-✔ Day 1 completed – Backend setup & project structure
-✔ Day 2 completed – MongoDB Atlas integration
-
+Backend completed
+Finished DB setup
+Connected to Cloudinary 
+Frontend almost finished
 ---
 
 ## 🔮 Upcoming Features
