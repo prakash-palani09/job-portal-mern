@@ -4,6 +4,8 @@ import api from "../api/axios";
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [msg, setMsg] = useState({ text: "", type: "" });
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [file, setFile] = useState(null);
 
   useEffect(() => {
     api.get("/jobs")
@@ -45,13 +47,58 @@ export default function Jobs() {
           <p>{job.location}</p>
 
           <button
-            onClick={() => applyJob(job._id)}
-            className="mt-2 bg-black text-white px-3 py-1"
-          >
-            Apply
+            onClick={() => setSelectedJob(job._id)}
+            className="mt-2 bg-black text-white px-3 py-1">
+                Apply & Upload Resume
           </button>
+
         </div>
       ))}
+
+    {selectedJob && (
+        <div className="border p-4 mt-4">
+            <h3 className="font-bold mb-2">Upload Resume</h3>
+
+            <input
+                type="file"
+                onChange={(e) => setFile(e.target.files[0])}
+                className="mb-2"
+            />
+
+            <button
+                onClick={async () => {
+                    try {
+                    // 1️⃣ Apply
+                    const applyRes = await api.post(
+                        `/applications/apply/${selectedJob}`
+                    );
+
+                    const appId = applyRes.data.application._id;
+
+                    // 2️⃣ Upload resume
+                    const formData = new FormData();
+                    formData.append("resume", file);
+
+                    await api.post(
+                        `/applications/${appId}/resume`,
+                        formData
+                    );
+
+                    alert("Applied + Resume uploaded 🎉");
+                    setSelectedJob(null);
+                    setFile(null);
+                    } catch (err) {
+                    alert(err.response?.data?.message || "Failed");
+                    }
+                }}
+                className="bg-green-600 text-white px-4 py-1"
+            >
+                Submit
+            </button>
+        </div>
+    )}
+
+
     </div>
   );
 }

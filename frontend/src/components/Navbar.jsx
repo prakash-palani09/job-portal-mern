@@ -9,16 +9,14 @@ export default function Navbar() {
     <nav className="flex justify-between p-4 border-b">
       <Link to="/" className="font-bold">Job Portal</Link>
 
-      {user ? (
-        <div className="flex gap-4">
-          <span>{user.email}</span>
-          <button onClick={logout} className="text-red-600">
-            Logout
-          </button>
-        </div>
-      ) : (
-        <Link to="/login">Login</Link>
+      {user?.role === "jobseeker" && (
+         <Link to="/applications">My Applications</Link>
       )}
+
+      {user?.role === "recruiter" && (
+          <Link to="/recruiter/jobs">Dashboard</Link>
+      )}
+
     </nav>
   );
 }

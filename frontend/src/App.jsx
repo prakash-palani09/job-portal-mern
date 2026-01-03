@@ -17,6 +17,7 @@ export default function App() {
           path="/"
           element={user ? <Jobs /> : <Navigate to="/login" />}
         />
+        <Route path="/applications" element={<MyApplications />} />
       </Routes>
     </>
   );
