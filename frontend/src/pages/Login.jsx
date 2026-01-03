@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import api from "../api/axios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const { login } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,14 +20,14 @@ export default function Login() {
         password,
       });
 
+      login(res.data);
       console.log("LOGIN SUCCESS:", res.data);
+      alert("Login successful");
 
-      // Save token (for now)
-      localStorage.setItem("token", res.data.token);
 
-      alert("Login successful!");
+
     } catch (err) {
-      setError(
+      alert(
         err.response?.data?.message || "Login failed"
       );
     }
