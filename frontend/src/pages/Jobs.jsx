@@ -9,7 +9,14 @@ export default function Jobs() {
 
   useEffect(() => {
     api.get("/jobs")
-      .then(res => setJobs(res.data.jobs))
+      .then(res => {
+        console.log("RAW JOBS RESPONSE", res.data);
+
+        const data = Array.isArray(res.data) ? res.data : res.data.jobs;
+
+        console.log("PARSED JOBS DATA", data);
+        setJobs(data || []);
+      })
       .catch(err => console.log(err));
   }, []);
 
@@ -55,22 +62,34 @@ export default function Jobs() {
         </div>
       ))}
 
-    {selectedJob && (
-        <div className="border p-4 mt-4">
-            <h3 className="font-bold mb-2">Upload Resume</h3>
+      {selectedJob && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded w-full max-w-md">
+            <h3 className="font-bold mb-4">Upload Resume</h3>
 
             <input
-                type="file"
-                onChange={(e) => setFile(e.target.files[0])}
-                className="mb-2"
+              type="file"
+              onChange={(e) => setFile(e.target.files[0])}
+              className="mb-4"
             />
 
-            <button
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setSelectedJob(null);
+                  setFile(null);
+                }}
+                className="px-4 py-1 border rounded"
+              >
+                Cancel
+              </button>
+
+              <button
                 onClick={async () => {
-                    try {
+                  try {
                     // 1️⃣ Apply
                     const applyRes = await api.post(
-                        `/applications/apply/${selectedJob}`
+                      `/applications/apply/${selectedJob}`
                     );
 
                     const appId = applyRes.data.application._id;
@@ -80,23 +99,30 @@ export default function Jobs() {
                     formData.append("resume", file);
 
                     await api.post(
-                        `/applications/${appId}/resume`,
-                        formData
+                      `/applications/${appId}/resume`,
+                      formData,
+                      {
+                        headers: {
+                          "Content-Type": "multipart/form-data",
+                        },
+                      }
                     );
 
                     alert("Applied + Resume uploaded 🎉");
                     setSelectedJob(null);
                     setFile(null);
-                    } catch (err) {
+                  } catch (err) {
                     alert(err.response?.data?.message || "Failed");
-                    }
+                  }
                 }}
-                className="bg-green-600 text-white px-4 py-1"
-            >
+                className="bg-black text-white px-4 py-1 rounded"
+              >
                 Submit
-            </button>
+              </button>
+            </div>
+          </div>
         </div>
-    )}
+      )}
 
 
     </div>

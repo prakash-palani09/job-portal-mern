@@ -28,18 +28,31 @@ exports.applyJob = async (req, res) => {
 };
 
 exports.getApplicationsByJob = async (req, res) => {
-    try {
-        const  jobId  = req.params.jobId;
+  try {
+    const jobId = req.params.jobId;
 
-        const applications = await Application.find({ job: jobId })
-            .populate('applicant', 'name email role')
-            .populate('job', 'title company');
-
-        res.json({ applications });
-    } catch (err) {
-        res.status(500).json({ message: 'Server error', error: err.message });
+    // 1️⃣ Fetch job
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
     }
+
+    // 2️⃣ Ensure this recruiter owns the job
+    if (job.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    // 3️⃣ Fetch applications
+    const applications = await Application.find({ job: jobId })
+      .populate("applicant", "name email role")
+      .populate("job", "title company");
+
+    res.json({ applications });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
 };
+
 
 exports.updateApplicationStatus = async (req, res) => {
     try {
@@ -93,3 +106,5 @@ exports.uploadResume = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+
